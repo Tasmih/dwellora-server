@@ -2,7 +2,7 @@ import "dotenv/config";
 import bcrypt from "bcryptjs";
 
 
-import { connectDatabase } from "../config/datbase.js";
+import { connectDatabase } from "../config/database.js";
 import { createAdmin } from "../models/admin.models.js";
 
 

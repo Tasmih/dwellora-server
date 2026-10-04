@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { getDatabase } from "../config/datbase.js";
+import { getDatabase } from "../config/database.js";
 
 
 
