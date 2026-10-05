@@ -19,7 +19,7 @@ const serviceRouter = Router();
 // public API
 // show service from website
 
-serviceRouter.ge(
+serviceRouter.get(
   "/",
   getServices
 );
