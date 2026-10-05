@@ -49,7 +49,7 @@ export const loginAdmin: RequestHandler = async (req, res, next) => {
       {
         subject: admin._id.toHexString(),
         algorithm: "HS256",
-        expiresIn: "1h",
+        expiresIn: "4d",
       }
     );
 
@@ -57,7 +57,7 @@ export const loginAdmin: RequestHandler = async (req, res, next) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 60 * 60 * 1000,
+      maxAge:4*24* 60 * 60 * 1000,
       path: "/",
     });
 

@@ -7,6 +7,7 @@ import {
   updateService,
   deleteService,
   updateServiceStatus,
+  getServiceBySlug,
 } from "../controllers/service.controller.js";
 
 
@@ -19,16 +20,10 @@ const serviceRouter = Router();
 // public API
 // show service from website
 
-serviceRouter.get(
-  "/",
-  getServices
-);
+serviceRouter.get( "/",getServices);
+serviceRouter.get("/slug/:slug", getServiceBySlug);
 
-
-serviceRouter.get(
-  "/:id",
-  getServiceById
-);
+serviceRouter.get("/:id",getServiceById);
 
 
 

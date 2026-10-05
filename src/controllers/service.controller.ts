@@ -249,7 +249,30 @@ export const deleteService: RequestHandler = async (
 
 };
 
+export const getServiceBySlug: RequestHandler = async (req, res, next) => {
+  try {
+    const slug = req.params.slug;
 
+    if (typeof slug !== "string" || !slug) {
+      res.status(400).json({ success: false, message: "Invalid slug" });
+      return;
+    }
+
+    const service = await serviceCollection().findOne({
+      slug,
+      status: "published",
+    });
+
+    if (!service) {
+      res.status(404).json({ success: false, message: "Service not found" });
+      return;
+    }
+
+    res.status(200).json({ success: true, service });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const updateServiceStatus: RequestHandler = async (
   req,
