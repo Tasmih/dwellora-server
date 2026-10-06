@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth.routes.js";
 import serviceRouter from "./routes/service.routes.js";
 import categoryRouter from "./routes/category.routes.js";
+import projectRouter from "./routes/project.routes.js";
 
 const clientOrigin = process.env.CLIENT_ORIGIN;
 
@@ -28,6 +29,7 @@ app.use(cookieParser());
 app.use("/api/auth", authRouter);
 app.use("/api/services", serviceRouter);
 app.use("/api/categories", categoryRouter);
+app.use("/api/projects", projectRouter);
 
 app.get("/api/health", (_req, res) => {
   res.status(200).json({

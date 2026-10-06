@@ -9,7 +9,8 @@
     "start": "node dist/server.js",
     "typecheck": "tsc --noEmit",
     "create-admin": "tsx src/scripts/createAdmin.ts",
-    "seed:services": "tsx src/seed/services.seed.ts"
+    "seed:services": "tsx src/seed/services.seed.ts",
+    "seed:projects": "tsx src/seed/projects.seed.ts"
   },
   "keywords": [],
   "author": "",

@@ -1,0 +1,332 @@
+[
+  {
+    "_id": {
+      "$oid": "6ac51a10079b63ca2b27b101"
+    },
+    "title": "Modern Full Home Renovation",
+    "slug": "modern-full-home-renovation",
+    "shortDescription": "A complete luxury residential overhaul blending open-concept living, structural enhancements, and bespoke architectural woodwork tailored for contemporary living in Dhaka.",
+    "description": "This full-home renovation transformed an expansive duplex apartment into a harmonious, light-flooded modern sanctuary in the heart of Dhaka. Dwellora managed every phase of the project from structural partition adjustments and layout optimization to the installation of high-efficiency climate integration and custom architectural woodwork.\n\nThe ground floor was reconfigured into an open-concept living, dining, and family lounge centered around premium matte-finish engineered timber flooring. Custom fluted teak wall panels, acoustic ceiling reveals, and concealed pocket doors deliver effortless spatial flow while maintaining distinct functional zones. The upper private quarters feature tailored master suites with acoustic insulation, custom walk-in closets, and spa-inspired ensuite bathrooms designed with climate-resilient materials built for everyday comfort.",
+    "coverImage": "https://i.ibb.co/B2rtVn03/Full-Home-Renovation.jpg",
+    "gallery": [
+      "https://i.ibb.co/B2rtVn03/Full-Home-Renovation.jpg",
+      "https://i.ibb.co/whSqNGYp/Interior-Home-Remodeling.jpg",
+      "https://i.ibb.co/60dkZ7cD/Wooden-Flooring-Installation.jpg"
+    ],
+    "categoryId": {
+      "$oid": "6ac3fcbe079b63ca2b27b03f"
+    },
+    "location": "Gulshan-2, Dhaka",
+    "client": "Premium Residential Client",
+    "year": "2025",
+    "features": [
+      {
+        "title": "Complete Spatial Reconfiguration",
+        "description": "Open-plan layout conversion optimizing natural airflow, spatial circulation, and daylit entertaining zones."
+      },
+      {
+        "title": "Bespoke Architectural Woodwork",
+        "description": "Handcrafted fluted natural teak feature paneling, integrated shadowline reveals, and flush frameless doors."
+      },
+      {
+        "title": "Turnkey Electrical & Lighting Upgrade",
+        "description": "Complete rewiring, surge protection, smart architectural LED lighting scenes, and concealed HVAC ducting."
+      },
+      {
+        "title": "Premium Hardwood Flooring",
+        "description": "Precision subfloor leveling with moisture-barrier underlayment and high-durability engineered wood flooring."
+      }
+    ],
+    "seo": {
+      "metaTitle": "Modern Full Home Renovation in Dhaka | Dwellora Portfolio",
+      "metaDescription": "Explore Dwellora's complete whole-home renovation in Gulshan, Dhaka featuring open-concept architecture, bespoke millwork, and luxury finishes.",
+      "keywords": "home renovation Bangladesh, interior design Dhaka, residential renovation company Bangladesh, full home renovation Dhaka, luxury apartment renovation Dhaka",
+      "ogTitle": "Modern Full Home Renovation in Dhaka | Dwellora Design & Build",
+      "ogDescription": "Turnkey whole-home transformation in Dhaka featuring open-concept living, custom woodwork, and refined architectural detailing.",
+      "ogImage": "https://i.ibb.co/B2rtVn03/Full-Home-Renovation.jpg",
+      "canonicalUrl": "https://dwellora.com/projects/modern-full-home-renovation"
+    },
+    "status": "published",
+    "createdAt": {
+      "$date": "2026-10-06T00:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-06T00:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ac51a10079b63ca2b27b102"
+    },
+    "title": "Contemporary Kitchen Makeover",
+    "slug": "contemporary-kitchen-makeover",
+    "shortDescription": "A chef-grade modern kitchen transformation featuring floor-to-ceiling moisture-resistant cabinetry, a mitered quartz waterfall island, and built-in appliances.",
+    "description": "Designed for modern lifestyle cooking and seamless entertaining, this contemporary kitchen makeover in Banani replaces a dark, closed kitchen with an ergonomic, high-performance culinary hub. Dwellora re-engineered the spatial layout to maximize counter space, ventilation efficiency, and organized pantry storage.\n\nThe kitchen's centerpiece is an expansive central waterfall island fabricated from premium Calacatta quartz with comfortable breakfast counter seating. Surrounding custom cabinetry was milled from solid hardwood frames with moisture-proof marine-grade cores, finished in an ultra-matte polyurethane lacquer and equipped with heavy-duty Blum soft-close hardware. Discrete under-cabinet LED task lighting, a high-power exhaust ventilation canopy, and flush-integrated appliances complete this refined, clutter-free culinary space.",
+    "coverImage": "https://i.ibb.co/c7GxjBv/Contemporary-Kitchen-Makeover.jpg",
+    "gallery": [
+      "https://i.ibb.co/c7GxjBv/Contemporary-Kitchen-Makeover.jpg",
+      "https://i.ibb.co/TDh3k91h/Kitchen-Cabinet-Renovation.jpg",
+      "https://i.ibb.co/twG36fNG/Kitchen-Counter-Renovation.jpg"
+    ],
+    "categoryId": {
+      "$oid": "6ac40c35079b63ca2b27b040"
+    },
+    "location": "Banani, Dhaka",
+    "client": "Private Residential Client",
+    "year": "2025",
+    "features": [
+      {
+        "title": "Quartz Waterfall Island",
+        "description": "Precision mitered Calacatta quartz island featuring undermount sink, concealed power hubs, and breakfast seating."
+      },
+      {
+        "title": "Moisture-Proof Custom Cabinetry",
+        "description": "Floor-to-ceiling bespoke cabinetry with marine-grade core, pull-out pantry units, and anti-fingerprint matte finish."
+      },
+      {
+        "title": "High-CFM Ventilation Hood",
+        "description": "Architectural chimney enclosure with powerful exhaust extraction and washable stainless baffle filters."
+      },
+      {
+        "title": "Built-In Appliance Fitting",
+        "description": "Seamless integration of built-in convection ovens, induction cooktop, and undermount stainless steel sink."
+      }
+    ],
+    "seo": {
+      "metaTitle": "Contemporary Kitchen Makeover in Dhaka | Dwellora Portfolio",
+      "metaDescription": "Discover Dwellora's luxury contemporary kitchen renovation in Banani, Dhaka featuring custom cabinetry and quartz waterfall counters.",
+      "keywords": "kitchen renovation Dhaka, home renovation Bangladesh, interior design Dhaka, residential renovation company Bangladesh, custom kitchen cabinets Dhaka",
+      "ogTitle": "Contemporary Kitchen Makeover in Banani | Dwellora Kitchens",
+      "ogDescription": "Modern kitchen transformation with bespoke cabinetry, waterfall quartz island, and smart storage solutions in Dhaka.",
+      "ogImage": "https://i.ibb.co/c7GxjBv/Contemporary-Kitchen-Makeover.jpg",
+      "canonicalUrl": "https://dwellora.com/projects/contemporary-kitchen-makeover"
+    },
+    "status": "published",
+    "createdAt": {
+      "$date": "2026-10-06T00:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-06T00:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ac51a10079b63ca2b27b103"
+    },
+    "title": "Luxury Bathroom Transformation",
+    "slug": "luxury-bathroom-transformation",
+    "shortDescription": "A serene master ensuite retreat boasting multi-layer waterproofing, curbless walk-in rainfall shower, and a freestanding soaking tub in Dhanmondi.",
+    "description": "This master bathroom transformation in Dhanmondi reimagines the residential ensuite as a restorative private wellness spa. Dwellora stripped the original space down to brickwork, introducing commercial-grade multi-layer waterproofing membranes, updated plumbing lines, and anti-slip large-format porcelain tilework.\n\nThe wet zone showcases an expansive curbless walk-in shower with ceiling-flush rainfall heads, concealed stainless linear drainage, and 10mm tempered glass partition. A freestanding solid resin soaking tub rests as a sculptural focal point, complemented by brushed gold tapware. A floating moisture-resistant teak vanity with anti-fog LED illuminated mirrors provides generous organized storage while keeping floor lines completely open and serene.",
+    "coverImage": "https://i.ibb.co/BVktQHdP/Luxury-Bathroom-Transformation.jpg",
+    "gallery": [
+      "https://i.ibb.co/BVktQHdP/Luxury-Bathroom-Transformation.jpg",
+      "https://i.ibb.co/PZkjRW0g/Shower-Area-Renovation.jpg",
+      "https://i.ibb.co/ZnPTLtK/Vanity-Installation.jpg"
+    ],
+    "categoryId": {
+      "$oid": "6ac4112c079b63ca2b27b041"
+    },
+    "location": "Dhanmondi, Dhaka",
+    "client": "Premium Residential Client",
+    "year": "2024",
+    "features": [
+      {
+        "title": "Curbless Walk-in Rain Shower",
+        "description": "Zero-threshold entry with concealed stainless linear trench drain, thermostatic diverter, and safety tempered glass."
+      },
+      {
+        "title": "Freestanding Soaking Tub",
+        "description": "Solid matte stone composite soaking tub paired with architectural floor-mounted mixer tapware."
+      },
+      {
+        "title": "Floating Teak Vanity Console",
+        "description": "Wall-hung water-resistant vanity with quartz countertop, undermount ceramic basin, and LED ambient backlight."
+      },
+      {
+        "title": "Certified Multi-Layer Waterproofing",
+        "description": "Complete continuous vapor-proof membrane treatment across wet areas to ensure zero dampness or leakage."
+      }
+    ],
+    "seo": {
+      "metaTitle": "Luxury Bathroom Transformation in Dhaka | Dwellora Portfolio",
+      "metaDescription": "Explore Dwellora's spa-inspired luxury bathroom remodel in Dhanmondi, Dhaka with curbless shower, soaking tub, and floating vanity.",
+      "keywords": "home renovation Bangladesh, interior design Dhaka, residential renovation company Bangladesh, bathroom renovation Dhaka, luxury bathroom remodel Dhaka",
+      "ogTitle": "Luxury Bathroom Transformation | Dwellora Spa & Bath",
+      "ogDescription": "Spa-inspired residential ensuite renovation in Dhaka featuring curbless rain shower, soaking tub, and moisture-proof vanity.",
+      "ogImage": "https://i.ibb.co/BVktQHdP/Luxury-Bathroom-Transformation.jpg",
+      "canonicalUrl": "https://dwellora.com/projects/luxury-bathroom-transformation"
+    },
+    "status": "published",
+    "createdAt": {
+      "$date": "2026-10-06T00:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-06T00:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ac51a10079b63ca2b27b104"
+    },
+    "title": "Custom Interior Furniture Project",
+    "slug": "custom-interior-furniture-project",
+    "shortDescription": "Handcrafted Chittagong teak and mahogany media feature walls, built-in display joinery, and custom dining furniture in Uttara.",
+    "description": "Commissioned for an upscale residence in Uttara, this custom interior furniture project highlights Dwellora’s master joinery and carpentry capabilities across multiple living zones. Every unit was crafted in our workshop using seasoned natural timber, moisture-sealed substrates, and durable eco-friendly PU lacquers.\n\nThe centerpiece is a 14-foot architectural TV media wall combining fluted timber slats, acoustic felt backing, floating console storage, and concealed in-wall AV wiring pathways. In the study lounge, floor-to-ceiling built-in bookcases integrate warm LED channel lighting and an executive workstation. In the dining area, a bespoke solid wood dining table with sculpted geometric legs provides an heirloom gathering centerpiece for the family.",
+    "coverImage": "https://i.ibb.co/ZzP2VRnH/Custom-Interior-Furniture-Project.jpg",
+    "gallery": [
+      "https://i.ibb.co/ZzP2VRnH/Custom-Interior-Furniture-Project.jpg",
+      "https://i.ibb.co/Y74tjCTf/Custom-TV-Unit-Design.jpg",
+      "https://i.ibb.co/KptZshgT/Custom-Dining-Furniture.jpg"
+    ],
+    "categoryId": {
+      "$oid": "6ac41d5675c98ae114364612"
+    },
+    "location": "Uttara, Dhaka",
+    "client": "Private Residential Client",
+    "year": "2024",
+    "features": [
+      {
+        "title": "Architectural Fluted Media Wall",
+        "description": "Precision-spaced seasoned hardwood slat wall with hidden conduit routing, floating console, and warm LED backlight reveals."
+      },
+      {
+        "title": "Floor-to-Ceiling Library Bookcases",
+        "description": "Heavy-load adjustable shelves with traditional joinery, integrated reading nooks, and low-profile touch-latches."
+      },
+      {
+        "title": "Solid Hardwood Dining Table",
+        "description": "Hand-planed seasoned timber top with natural grain preservation and sculptural chamfered trestle base."
+      },
+      {
+        "title": "Concealed Cable & Wire Management",
+        "description": "Zero visible cords through in-wall conduit channels, ventilated electronics bays, and flush power modules."
+      }
+    ],
+    "seo": {
+      "metaTitle": "Custom Interior Furniture in Dhaka | Dwellora Portfolio",
+      "metaDescription": "Discover Dwellora's bespoke furniture portfolio in Uttara, Dhaka: fluted timber media walls, built-in bookcases, and artisan dining tables.",
+      "keywords": "home renovation Bangladesh, interior design Dhaka, residential renovation company Bangladesh, custom furniture Dhaka, bespoke woodwork Dhaka",
+      "ogTitle": "Custom Interior Furniture Project | Dwellora Artisan Woodworking",
+      "ogDescription": "Artisan-crafted furniture suite featuring fluted timber media walls, custom library joinery, and dining pieces in Dhaka.",
+      "ogImage": "https://i.ibb.co/ZzP2VRnH/Custom-Interior-Furniture-Project.jpg",
+      "canonicalUrl": "https://dwellora.com/projects/custom-interior-furniture-project"
+    },
+    "status": "published",
+    "createdAt": {
+      "$date": "2026-10-06T00:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-06T00:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ac51a10079b63ca2b27b105"
+    },
+    "title": "Premium Wardrobe & Storage Solution",
+    "slug": "premium-wardrobe-storage-solution",
+    "shortDescription": "A boutique walk-in dressing suite and custom fitted wardrobe system engineered with fluted bronze glass, valet organizers, and automated lighting.",
+    "description": "This premium wardrobe project in Bashundhara Residential Area transformed a dedicated dressing room into a high-end luxury boutique suite. Dwellora engineered wall-to-wall, floor-to-ceiling fitted cabinetry utilizing moisture-resistant core panels finished in subtle textured laminates and solid wood edge bandings.\n\nThe wardrobe suite features floor-to-ceiling slim-frame aluminum doors with fluted bronze glass, illuminated angled shoe display tiers, pull-out velvet-lined jewelry drawers, and dual-tier hanging modules for traditional and western attire. Micro-sensor vertical LED channels softly illuminate upon opening. Integrated soft-close sliding tracks and concealed magnetic catches ensure effortless and silent daily operation, bringing order and elegance to personal wardrobes.",
+    "coverImage": "https://i.ibb.co/B5dS76Fm/Premium-Wardrobe-Storage-Solution.jpg",
+    "gallery": [
+      "https://i.ibb.co/B5dS76Fm/Premium-Wardrobe-Storage-Solution.jpg",
+      "https://i.ibb.co/WW2hYLSN/Bedroom-Wardrobe-Design.jpg",
+      "https://i.ibb.co/3yBcSPtY/Storage-Cabinet-Installation.jpg"
+    ],
+    "categoryId": {
+      "$oid": "6ac41ed775c98ae114364613"
+    },
+    "location": "Bashundhara Residential Area, Dhaka",
+    "client": "Premium Residential Client",
+    "year": "2025",
+    "features": [
+      {
+        "title": "Fluted Bronze Glass Doors",
+        "description": "Slim anodized aluminum frame doors with fluted bronze safety glass and whisper-quiet soft-close sliding mechanisms."
+      },
+      {
+        "title": "Tailored Internal Valet Organizers",
+        "description": "Modular velvet accessory trays, pull-out trouser racks, watch organizers, and dedicated full-length attire compartments."
+      },
+      {
+        "title": "Automated Proximity Sensor Lighting",
+        "description": "Vertical warm LED channel extrusions that activate automatically upon opening for gallery-level visibility."
+      },
+      {
+        "title": "Integrated Island Dressing Console",
+        "description": "Central dressing room island with glass-top display drawers, seating bench, and hidden storage compartments."
+      }
+    ],
+    "seo": {
+      "metaTitle": "Premium Wardrobe & Storage Solution in Dhaka | Dwellora Portfolio",
+      "metaDescription": "Explore Dwellora's bespoke walk-in wardrobe and closet design in Bashundhara, Dhaka with fluted glass doors and integrated sensor lighting.",
+      "keywords": "home renovation Bangladesh, interior design Dhaka, residential renovation company Bangladesh, custom wardrobe design Dhaka, walk in closet Dhaka",
+      "ogTitle": "Premium Wardrobe & Storage Solution | Dwellora Wardrobes",
+      "ogDescription": "Boutique-level fitted dressing suites and custom walk-in wardrobes with automated lighting and smart accessory storage in Dhaka.",
+      "ogImage": "https://i.ibb.co/B5dS76Fm/Premium-Wardrobe-Storage-Solution.jpg",
+      "canonicalUrl": "https://dwellora.com/projects/premium-wardrobe-storage-solution"
+    },
+    "status": "published",
+    "createdAt": {
+      "$date": "2026-10-06T00:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-06T00:00:00.000Z"
+    }
+  },
+  {
+    "_id": {
+      "$oid": "6ac51a10079b63ca2b27b106"
+    },
+    "title": "Elegant Interior Finishing Project",
+    "slug": "elegant-interior-finishing-project",
+    "shortDescription": "Artisanal wall texturing, Level 5 surface preparation, bespoke ceiling detailing, and premium architectural paint finishing in Mirpur DOHS.",
+    "description": "Executed across an expansive contemporary duplex residence in Mirpur DOHS, this interior finishing project represents the pinnacle of surface craftsmanship. Dwellora was engaged to bring depth, tactile warmth, and visual perfection to the walls, ceilings, and architectural moldings.\n\nOur artisans completed comprehensive Level 5 drywall surface preparation followed by multiple hand-applied mineral textures and subtle glaze treatments in warm organic tones. High-profile architectural baseboards, door casing trim, and ceiling coffer reveals were finished with fine spray lacquer applications for brushmark-free perfection. Low-VOC eco-friendly architectural coatings reflect natural light gently, elevating the entire home into a serene, sophisticated living environment.",
+    "coverImage": "https://i.ibb.co/4wQBYKfQ/Elegant-Interior-Finishing-Project.jpg",
+    "gallery": [
+      "https://i.ibb.co/4wQBYKfQ/Elegant-Interior-Finishing-Project.jpg",
+      "https://i.ibb.co/qMhP6Tx/painting-finishing.jpg",
+      "https://i.ibb.co/whSqNGYp/Interior-Home-Remodeling.jpg"
+    ],
+    "categoryId": {
+      "$oid": "6ac4244d75c98ae114364616"
+    },
+    "location": "Mirpur DOHS, Dhaka",
+    "client": "Private Residential Client",
+    "year": "2025",
+    "features": [
+      {
+        "title": "Handcrafted Mineral Wall Textures",
+        "description": "Multi-layer artisanal mineral texturing creating velvety organic finishes with subtle natural depth."
+      },
+      {
+        "title": "Level 5 Surface Preparation",
+        "description": "Dustless sanding and full skim coating to ensure completely flat, reflection-free wall substrates."
+      },
+      {
+        "title": "Spray Lacquer Trim Woodwork",
+        "description": "Factory-finish high-precision spray application on custom moldings, door casings, and baseboard trims."
+      },
+      {
+        "title": "Curated Designer Paint Finishes",
+        "description": "Eco-friendly low-VOC designer paint selections calibrated for soft ambient light reflection and easy maintenance."
+      }
+    ],
+    "seo": {
+      "metaTitle": "Elegant Interior Finishing Project in Dhaka | Dwellora Portfolio",
+      "metaDescription": "Explore Dwellora's fine interior finishing project in Mirpur DOHS, Dhaka: artisanal textured walls, Level 5 surface finishing, and designer paint palettes.",
+      "keywords": "home renovation Bangladesh, interior design Dhaka, residential renovation company Bangladesh, wall finishing Dhaka, interior painting Dhaka",
+      "ogTitle": "Elegant Interior Finishing Project | Dwellora Fine Finishes",
+      "ogDescription": "Premium interior finishing featuring artisanal textures, Level 5 surface preparation, and fine spray architectural trims in Dhaka.",
+      "ogImage": "https://i.ibb.co/4wQBYKfQ/Elegant-Interior-Finishing-Project.jpg",
+      "canonicalUrl": "https://dwellora.com/projects/elegant-interior-finishing-project"
+    },
+    "status": "published",
+    "createdAt": {
+      "$date": "2026-10-06T00:00:00.000Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-06T00:00:00.000Z"
+    }
+  }
+]
