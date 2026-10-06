@@ -11,12 +11,18 @@ function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-function isHttpUrl(value: string) {
+function sanitizeUrl(value: string): string {
   try {
-    const url = new URL(value);
-    return url.protocol === "http:" || url.protocol === "https:";
+    const url = new URL(value.trim());
+    if (url.protocol !== "http:" && url.protocol !== "https:") {
+      throw new Error("Image must be a valid HTTP or HTTPS URL.");
+    }
+    if (url.hostname.endsWith(".")) {
+      url.hostname = url.hostname.replace(/\.+$/, "");
+    }
+    return url.toString();
   } catch {
-    return false;
+    throw new Error("Image must be a valid HTTP or HTTPS URL.");
   }
 }
 
@@ -45,10 +51,10 @@ function readCategoryInput(body: unknown) {
 
   let image: string | undefined;
   if (body.image !== undefined && body.image !== null && body.image !== "") {
-    if (typeof body.image !== "string" || !isHttpUrl(body.image)) {
+    if (typeof body.image !== "string" || !body.image.trim()) {
       throw new Error("Image must be a valid HTTP or HTTPS URL.");
     }
-    image = body.image.trim();
+    image = sanitizeUrl(body.image);
   }
 
   let displayOrder: number | undefined;

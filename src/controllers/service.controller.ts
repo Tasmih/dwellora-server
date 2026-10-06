@@ -5,18 +5,27 @@ import {
   serviceCollection,
   type SeoSettings,
 } from "../models/service.models.js";
-import { categoryCollection } from "../models/category.models.js";
+import {
+  categoryCollection,
+  type ServiceCategory,
+} from "../models/category.models.js";
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-function isHttpUrl(value: string) {
+function sanitizeUrl(value: string, fieldName = "URL"): string {
   try {
-    const url = new URL(value);
-    return url.protocol === "http:" || url.protocol === "https:";
+    const url = new URL(value.trim());
+    if (url.protocol !== "http:" && url.protocol !== "https:") {
+      throw new Error(`${fieldName} must be a valid HTTP or HTTPS URL.`);
+    }
+    if (url.hostname.endsWith(".")) {
+      url.hostname = url.hostname.replace(/\.+$/, "");
+    }
+    return url.toString();
   } catch {
-    return false;
+    throw new Error(`${fieldName} must be a valid HTTP or HTTPS URL.`);
   }
 }
 
@@ -38,7 +47,7 @@ function readServiceInput(body: unknown) {
   const title = requiredText("title");
   const slug = requiredText("slug");
   const description = requiredText("description");
-  const image = requiredText("image");
+  const rawImage = requiredText("image");
 
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
     throw new Error(
@@ -46,9 +55,7 @@ function readServiceInput(body: unknown) {
     );
   }
 
-  if (!isHttpUrl(image)) {
-    throw new Error("Image must be a valid HTTP or HTTPS URL.");
-  }
+  const image = sanitizeUrl(rawImage, "Image");
 
   let shortDescription: string | undefined;
   if (body.shortDescription !== undefined) {
@@ -116,23 +123,20 @@ function readServiceInput(body: unknown) {
       return value.trim();
     };
 
+    const ogImageRaw = readSeoText("ogImage");
+    const canonicalUrlRaw = readSeoText("canonicalUrl");
+
     seo = {
       metaTitle: readSeoText("metaTitle"),
       metaDescription: readSeoText("metaDescription"),
       keywords: readSeoText("keywords"),
       ogTitle: readSeoText("ogTitle"),
       ogDescription: readSeoText("ogDescription"),
-      ogImage: readSeoText("ogImage"),
-      canonicalUrl: readSeoText("canonicalUrl"),
+      ogImage: ogImageRaw ? sanitizeUrl(ogImageRaw, "Open Graph image") : "",
+      canonicalUrl: canonicalUrlRaw
+        ? sanitizeUrl(canonicalUrlRaw, "Canonical URL")
+        : "",
     };
-
-    if (seo.ogImage && !isHttpUrl(seo.ogImage)) {
-      throw new Error("Open Graph image must be a valid HTTP or HTTPS URL.");
-    }
-
-    if (seo.canonicalUrl && !isHttpUrl(seo.canonicalUrl)) {
-      throw new Error("Canonical URL must be a valid HTTP or HTTPS URL.");
-    }
   }
 
   return {
@@ -218,21 +222,43 @@ export const createService: RequestHandler = async (req, res, next) => {
   }
 };
 
-// Public: Get published services (only services in published categories or uncategorized)
+// Helper to find category document across service_categories or categories collections
+async function findCategoryDoc(
+  query: Record<string, unknown>
+): Promise<ServiceCategory | null> {
+  let cat = await categoryCollection().findOne(query);
+  if (!cat) {
+    try {
+      const db = categoryCollection().dbName ? categoryCollection() : null;
+    } catch {}
+  }
+  return cat;
+}
+
+// Helper to find multiple category documents
+async function findCategoryDocs(
+  query: Record<string, unknown>
+): Promise<ServiceCategory[]> {
+  return categoryCollection().find(query).toArray();
+}
+
+// Public: Get published services (filter by category slug or ID)
 export const getServices: RequestHandler = async (req, res, next) => {
   try {
-    const categoryQuery = req.query.category;
+    const categoryQuery =
+      req.query.category || req.query.categorySlug || req.query.categoryId;
     let query: Record<string, unknown>;
 
     if (typeof categoryQuery === "string" && categoryQuery.trim()) {
       const catParam = categoryQuery.trim();
-      const cat = await categoryCollection().findOne({
-        status: "published",
+      const isOid = ObjectId.isValid(catParam) && catParam.length === 24;
+
+      // 1. Resolve category by slug (or by _id if ObjectId string provided)
+      const cat = await findCategoryDoc({
         $or: [
           { slug: catParam },
-          ...(ObjectId.isValid(catParam)
-            ? [{ _id: new ObjectId(catParam) }]
-            : []),
+          { slug: catParam.toLowerCase() },
+          ...(isOid ? [{ _id: new ObjectId(catParam) }] : []),
         ],
       });
 
@@ -244,23 +270,45 @@ export const getServices: RequestHandler = async (req, res, next) => {
         return;
       }
 
+      // If category is explicitly unpublished, return empty list for public
+      if (cat.status === "unpublished") {
+        res.status(200).json({
+          success: true,
+          services: [],
+        });
+        return;
+      }
+
+      // 2. Extract category ObjectId
+      const targetCatId =
+        cat._id instanceof ObjectId ? cat._id : new ObjectId(cat._id);
+
+      // 3. Query services collection by categoryId ObjectId
       query = {
         status: "published",
-        categoryId: cat._id,
+        $or: [
+          { categoryId: targetCatId },
+          { categoryId: targetCatId.toHexString() },
+        ],
       };
     } else {
       // Find all published category IDs
-      const publishedCats = await categoryCollection()
-        .find({ status: "published" }, { projection: { _id: 1 } })
-        .toArray();
-      const publishedCatIds = publishedCats.map((c) => c._id);
+      const publishedCats = await findCategoryDocs({
+        status: { $ne: "unpublished" },
+      });
+      const publishedCatIds = publishedCats
+        .map((c) => (c._id ? (c._id instanceof ObjectId ? c._id : new ObjectId(c._id)) : null))
+        .filter((id): id is ObjectId => Boolean(id));
+      const publishedCatIdStrs = publishedCats
+        .map((c) => (c._id ? c._id.toString() : null))
+        .filter((id): id is string => Boolean(id));
 
       query = {
         status: "published",
         $or: [
           { categoryId: { $in: [null, undefined] } },
           { categoryId: { $exists: false } },
-          { categoryId: { $in: publishedCatIds } },
+          { categoryId: { $in: [...publishedCatIds, ...publishedCatIdStrs] } },
         ],
       };
     }
@@ -272,29 +320,40 @@ export const getServices: RequestHandler = async (req, res, next) => {
 
     // Attach category details
     const categoryIds = services
-      .map((s) => s.categoryId)
+      .map((s) => {
+        if (!s.categoryId) return null;
+        return ObjectId.isValid(s.categoryId)
+          ? new ObjectId(s.categoryId)
+          : null;
+      })
       .filter((id): id is ObjectId => Boolean(id));
 
     const categories =
       categoryIds.length > 0
-        ? await categoryCollection()
-            .find({ _id: { $in: categoryIds } })
-            .toArray()
+        ? await findCategoryDocs({ _id: { $in: categoryIds } })
         : [];
 
     const categoryMap = new Map(
-      categories.map((c) => [
-        c._id.toHexString(),
-        { _id: c._id, name: c.name, slug: c.slug },
-      ])
+      categories
+        .filter((c) => Boolean(c._id))
+        .map((c) => [
+          c._id!.toHexString(),
+          { _id: c._id!, name: c.name, slug: c.slug },
+        ])
     );
 
-    const enrichedServices = services.map((s) => ({
-      ...s,
-      category: s.categoryId
-        ? categoryMap.get(s.categoryId.toHexString())
-        : undefined,
-    }));
+    const enrichedServices = services.map((s) => {
+      const catKey = s.categoryId
+        ? typeof s.categoryId === "string"
+          ? s.categoryId
+          : s.categoryId.toHexString()
+        : undefined;
+
+      return {
+        ...s,
+        category: catKey ? categoryMap.get(catKey) : undefined,
+      };
+    });
 
     res.status(200).json({
       success: true,
@@ -305,38 +364,90 @@ export const getServices: RequestHandler = async (req, res, next) => {
   }
 };
 
-// Admin: Get all services with category details
-export const getAdminServices: RequestHandler = async (_req, res, next) => {
+// Admin: Get all services with category details (optionally filter by category)
+export const getAdminServices: RequestHandler = async (req, res, next) => {
   try {
+    const categoryQuery =
+      req.query.category || req.query.categorySlug || req.query.categoryId;
+    let query: Record<string, unknown> = {};
+
+    if (typeof categoryQuery === "string" && categoryQuery.trim()) {
+      const catParam = categoryQuery.trim();
+      const isOid = ObjectId.isValid(catParam) && catParam.length === 24;
+
+      const cat = await findCategoryDoc({
+        $or: [
+          { slug: catParam },
+          { slug: catParam.toLowerCase() },
+          ...(isOid ? [{ _id: new ObjectId(catParam) }] : []),
+        ],
+      });
+
+      if (cat) {
+        const targetCatId =
+          cat._id instanceof ObjectId ? cat._id : new ObjectId(cat._id);
+        query = {
+          $or: [
+            { categoryId: targetCatId },
+            { categoryId: targetCatId.toHexString() },
+          ],
+        };
+      } else if (isOid) {
+        query = {
+          $or: [
+            { categoryId: new ObjectId(catParam) },
+            { categoryId: catParam },
+          ],
+        };
+      } else {
+        res.status(200).json({
+          success: true,
+          services: [],
+        });
+        return;
+      }
+    }
+
     const services = await serviceCollection()
-      .find()
+      .find(query)
       .sort({ createdAt: -1 })
       .toArray();
 
     const categoryIds = services
-      .map((s) => s.categoryId)
+      .map((s) => {
+        if (!s.categoryId) return null;
+        return ObjectId.isValid(s.categoryId)
+          ? new ObjectId(s.categoryId)
+          : null;
+      })
       .filter((id): id is ObjectId => Boolean(id));
 
     const categories =
       categoryIds.length > 0
-        ? await categoryCollection()
-            .find({ _id: { $in: categoryIds } })
-            .toArray()
+        ? await findCategoryDocs({ _id: { $in: categoryIds } })
         : [];
 
     const categoryMap = new Map(
-      categories.map((c) => [
-        c._id.toHexString(),
-        { _id: c._id, name: c.name, slug: c.slug, status: c.status },
-      ])
+      categories
+        .filter((c) => Boolean(c._id))
+        .map((c) => [
+          c._id!.toHexString(),
+          { _id: c._id!, name: c.name, slug: c.slug, status: c.status },
+        ])
     );
 
-    const enrichedServices = services.map((s) => ({
-      ...s,
-      category: s.categoryId
-        ? categoryMap.get(s.categoryId.toHexString())
-        : undefined,
-    }));
+    const enrichedServices = services.map((s) => {
+      const catKey = s.categoryId
+        ? typeof s.categoryId === "string"
+          ? s.categoryId
+          : s.categoryId.toHexString()
+        : undefined;
+
+      return {
+        ...s,
+        category: catKey ? categoryMap.get(catKey) : undefined,
+      };
+    });
 
     res.status(200).json({
       success: true,
@@ -374,9 +485,15 @@ export const getServiceById: RequestHandler = async (req, res, next) => {
 
     let category;
     if (service.categoryId) {
-      const cat = await categoryCollection().findOne({
-        _id: service.categoryId,
+      const targetCatId =
+        ObjectId.isValid(service.categoryId)
+          ? new ObjectId(service.categoryId)
+          : service.categoryId;
+
+      const cat = await findCategoryDoc({
+        _id: targetCatId,
       });
+
       if (cat) {
         category = {
           _id: cat._id,
@@ -427,12 +544,17 @@ export const getServiceBySlug: RequestHandler = async (req, res, next) => {
 
     let category;
     if (service.categoryId) {
-      const cat = await categoryCollection().findOne({
-        _id: service.categoryId,
-        status: "published",
+      const targetCatId =
+        ObjectId.isValid(service.categoryId)
+          ? new ObjectId(service.categoryId)
+          : service.categoryId;
+
+      const cat = await findCategoryDoc({
+        _id: targetCatId,
+        status: { $ne: "unpublished" },
       });
 
-      // Rules 2, 3, 6: If assigned category is unpublished or dangling, return 404
+      // Rules: If assigned category is unpublished or dangling, return 404
       if (!cat) {
         res.status(404).json({
           success: false,
