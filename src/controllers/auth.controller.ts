@@ -75,3 +75,17 @@ export const loginAdmin: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
+
+export const logoutAdmin: RequestHandler = (_req, res) => {
+  res.clearCookie("admin_token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Logged out successfully",
+  });
+};

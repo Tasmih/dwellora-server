@@ -7,6 +7,7 @@ import categoryRouter from "./routes/category.routes.js";
 import projectRouter from "./routes/project.routes.js";
 import blogRouter from "./routes/blog.routes.js";
 import contactRouter from "./modules/contact/contact.routes.js";
+import adminRouter from "./routes/admin.routes.js";
 
 const clientOrigin = process.env.CLIENT_ORIGIN;
 
@@ -18,9 +19,13 @@ const app = express();
 
 app.disable("x-powered-by");
 
+const allowedOrigins = clientOrigin.includes(",")
+  ? clientOrigin.split(",").map((s) => s.trim())
+  : clientOrigin;
+
 app.use(
   cors({
-    origin: clientOrigin,
+    origin: allowedOrigins,
     credentials: true,
   })
 );
@@ -34,6 +39,7 @@ app.use("/api/categories", categoryRouter);
 app.use("/api/projects", projectRouter);
 app.use("/api/blogs", blogRouter);
 app.use("/api/contact", contactRouter);
+app.use("/api/admin", adminRouter);
 
 app.get("/api/health", (_req, res) => {
   res.status(200).json({
