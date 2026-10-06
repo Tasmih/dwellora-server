@@ -20,7 +20,7 @@ export interface Blog {
   slug: string;
   shortDescription: string;
   content: string;
-  coverImage: string;
+  coverImage?: string;
   type: BlogType;
   videoUrl?: string;
   author: string;

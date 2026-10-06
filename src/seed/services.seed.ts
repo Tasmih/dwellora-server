@@ -57,7 +57,7 @@ export interface SeedServiceInput {
 
 /**
  * Professional Renovation Services Seed Data
- * You can update image URLs and category IDs here or provide them separately.
+ *  can update image URLs and category IDs here or provide them separately.
  */
 export const SEED_SERVICES: SeedServiceInput[] = [
   {
@@ -464,7 +464,7 @@ async function seedServices() {
 
     console.log("\n==========================================");
     console.log(`Results: ${insertedCount} inserted, ${skippedCount} skipped.`);
-    console.log("Services seed completed successfully! 🎉");
+    console.log("Services seed completed successfully");
     console.log("==========================================\n");
 
     process.exit(0);

@@ -10,7 +10,10 @@
     "typecheck": "tsc --noEmit",
     "create-admin": "tsx src/scripts/createAdmin.ts",
     "seed:services": "tsx src/seed/services.seed.ts",
-    "seed:projects": "tsx src/seed/projects.seed.ts"
+    "seed:projects": "tsx src/seed/projects.seed.ts",
+    "seed:blogs": "tsx src/seed/blogs.seed.ts",
+    "verify:blogs": "tsx src/scripts/verify_blogs.ts",
+    "test:contact": "tsx src/scripts/test_contact_api.ts"
   },
   "keywords": [],
   "author": "",

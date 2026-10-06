@@ -69,17 +69,13 @@ function readBlogInput(body: unknown) {
   const slug = requiredText("slug");
   const content = requiredText("content");
 
-  // Cover image with fallback to image property
+  // Cover image with fallback to image property (optional)
   const rawCoverImage =
     typeof body.coverImage === "string" && body.coverImage.trim()
       ? body.coverImage.trim()
       : typeof body.image === "string" && body.image.trim()
         ? body.image.trim()
-        : "";
-
-  if (!rawCoverImage) {
-    throw new Error("coverImage is required.");
-  }
+        : undefined;
 
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
     throw new Error(
@@ -87,7 +83,9 @@ function readBlogInput(body: unknown) {
     );
   }
 
-  const coverImage = sanitizeUrl(rawCoverImage, "coverImage");
+  const coverImage = rawCoverImage
+    ? sanitizeUrl(rawCoverImage, "coverImage")
+    : undefined;
 
   // Type: blog | vlog
   const rawType = optionalText("type");
@@ -99,9 +97,16 @@ function readBlogInput(body: unknown) {
     type = rawType;
   }
 
-  // Optional video URL (relevant especially for vlogs)
+  // Optional video URL
   const rawVideoUrl = optionalText("videoUrl");
   const videoUrl = rawVideoUrl ? sanitizeUrl(rawVideoUrl, "videoUrl") : undefined;
+
+  // Combined Media Validation: At least one media source is required (coverImage or videoUrl)
+  if (!coverImage && !videoUrl) {
+    throw new Error(
+      "At least one media source (coverImage or videoUrl) is required."
+    );
+  }
 
   let shortDescription = optionalText("shortDescription");
   if (!shortDescription) {
@@ -156,7 +161,7 @@ function readBlogInput(body: unknown) {
     const ogImage =
       typeof rawSeo.ogImage === "string" && rawSeo.ogImage.trim()
         ? sanitizeUrl(rawSeo.ogImage, "ogImage")
-        : coverImage;
+        : coverImage || "";
 
     const canonicalUrl =
       typeof rawSeo.canonicalUrl === "string" && rawSeo.canonicalUrl.trim()
@@ -180,7 +185,7 @@ function readBlogInput(body: unknown) {
       keywords: "home renovation, bespoke carpentry, architectural design, interior inspiration",
       ogTitle: `${title} | Dwellora Journal`,
       ogDescription: shortDescription,
-      ogImage: coverImage,
+      ogImage: coverImage || "",
       canonicalUrl: `https://dwellora.com/blog/${slug}`,
     };
   }
@@ -190,9 +195,9 @@ function readBlogInput(body: unknown) {
     slug,
     shortDescription,
     content,
-    coverImage,
+    ...(coverImage ? { coverImage } : {}),
     type,
-    videoUrl,
+    ...(videoUrl ? { videoUrl } : {}),
     author,
     readTime,
     seo,
