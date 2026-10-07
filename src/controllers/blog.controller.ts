@@ -212,7 +212,7 @@ function errorMessage(error: unknown) {
 // Public: Get all published blogs/vlogs with optional filtering
 export const getBlogs: RequestHandler = async (req, res, next) => {
   try {
-    const { type, search } = req.query;
+    const { type, search, limit: limitQuery } = req.query;
 
     const matchQuery: Record<string, unknown> = {
       status: "published",
@@ -227,13 +227,25 @@ export const getBlogs: RequestHandler = async (req, res, next) => {
       matchQuery.$or = [
         { title: searchRegex },
         { shortDescription: searchRegex },
+        { content: searchRegex },
       ];
     }
 
-    const blogs = await blogCollection()
+    const limitNum = limitQuery ? Number(limitQuery) : undefined;
+    const limit =
+      limitNum && Number.isInteger(limitNum) && limitNum > 0
+        ? Math.min(limitNum, 100)
+        : undefined;
+
+    let cursor = blogCollection()
       .find(matchQuery)
-      .sort({ createdAt: -1 })
-      .toArray();
+      .sort({ createdAt: -1 });
+
+    if (limit) {
+      cursor = cursor.limit(limit);
+    }
+
+    const blogs = await cursor.toArray();
 
     res.status(200).json({
       success: true,

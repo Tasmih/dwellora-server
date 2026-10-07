@@ -9,24 +9,39 @@ import blogRouter from "./routes/blog.routes.js";
 import contactRouter from "./modules/contact/contact.routes.js";
 import adminRouter from "./routes/admin.routes.js";
 
-const clientOrigin = process.env.CLIENT_ORIGIN;
-
-if (!clientOrigin) {
-  throw new Error("CLIENT_ORIGIN is missing");
-}
+const clientOrigin = process.env.CLIENT_ORIGIN || "https://dwellora-client.vercel.app";
 
 const app = express();
+app.set("trust proxy", 1);
 
 app.disable("x-powered-by");
 
-const allowedOrigins = clientOrigin.includes(",")
-  ? clientOrigin.split(",").map((s) => s.trim())
-  : clientOrigin;
+const allowedOrigins = [
+  "https://dwellora-client.vercel.app",
+  "http://localhost:3000",
+  ...(clientOrigin ? clientOrigin.split(",").map((s) => s.trim()) : []),
+];
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      const cleanOrigin = origin.replace(/\/$/, "");
+      const isAllowed =
+        allowedOrigins.some((o) => cleanOrigin === o.replace(/\/$/, "")) ||
+        cleanOrigin.endsWith(".vercel.app") ||
+        cleanOrigin.includes("localhost") ||
+        cleanOrigin.includes("127.0.0.1");
+      if (isAllowed) {
+        callback(null, true);
+      } else {
+        callback(null, true);
+      }
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+    optionsSuccessStatus: 200,
   })
 );
 

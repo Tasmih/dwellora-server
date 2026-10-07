@@ -12,6 +12,27 @@ if (!jwtSecret) {
 
 const signingSecret: string = jwtSecret;
 
+const isProductionEnv =
+  process.env.NODE_ENV === "production" ||
+  process.env.RENDER === "true" ||
+  Boolean(process.env.RENDER_EXTERNAL_URL) ||
+  Boolean(process.env.CLIENT_ORIGIN?.includes("vercel.app"));
+
+export const getAuthCookieOptions = (req?: Parameters<RequestHandler>[0]) => {
+  const isSecure =
+    isProductionEnv ||
+    req?.secure ||
+    req?.get("x-forwarded-proto") === "https";
+
+  return {
+    httpOnly: true,
+    secure: Boolean(isSecure),
+    sameSite: (isSecure ? "none" : "lax") as "none" | "lax",
+    maxAge: 4 * 24 * 60 * 60 * 1000,
+    path: "/",
+  };
+};
+
 export const loginAdmin: RequestHandler = async (req, res, next) => {
   try {
     const { email, password } = req.body ?? {};
@@ -53,19 +74,13 @@ export const loginAdmin: RequestHandler = async (req, res, next) => {
       }
     );
 
-    const isProduction = process.env.NODE_ENV === "production";
-
-    res.cookie("admin_token", token, {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? "none" : "lax",
-      maxAge: 4 * 24 * 60 * 60 * 1000,
-      path: "/",
-    });
+    const cookieOpts = getAuthCookieOptions(req);
+    res.cookie("admin_token", token, cookieOpts);
 
     res.status(200).json({
       success: true,
       message: "Login successful",
+      token,
       admin: {
         id: admin._id.toHexString(),
         name: admin.name,
@@ -78,13 +93,13 @@ export const loginAdmin: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const logoutAdmin: RequestHandler = (_req, res) => {
-  const isProduction = process.env.NODE_ENV === "production";
+export const logoutAdmin: RequestHandler = (req, res) => {
+  const cookieOpts = getAuthCookieOptions(req);
 
   res.clearCookie("admin_token", {
     httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? "none" : "lax",
+    secure: cookieOpts.secure,
+    sameSite: cookieOpts.sameSite,
     path: "/",
   });
 

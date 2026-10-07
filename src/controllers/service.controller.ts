@@ -247,13 +247,17 @@ export const getServices: RequestHandler = async (req, res, next) => {
   try {
     const categoryQuery =
       req.query.category || req.query.categorySlug || req.query.categoryId;
-    let query: Record<string, unknown>;
+    const limitParam = req.query.limit ? Number(req.query.limit) : undefined;
+    const limit =
+      limitParam && Number.isInteger(limitParam) && limitParam > 0
+        ? Math.min(limitParam, 100)
+        : undefined;
 
+    // Fetch categories and services efficiently
     if (typeof categoryQuery === "string" && categoryQuery.trim()) {
       const catParam = categoryQuery.trim();
       const isOid = ObjectId.isValid(catParam) && catParam.length === 24;
 
-      // 1. Resolve category by slug (or by _id if ObjectId string provided)
       const cat = await findCategoryDoc({
         $or: [
           { slug: catParam },
@@ -262,7 +266,7 @@ export const getServices: RequestHandler = async (req, res, next) => {
         ],
       });
 
-      if (!cat) {
+      if (!cat || cat.status === "unpublished") {
         res.status(200).json({
           success: true,
           services: [],
@@ -270,90 +274,88 @@ export const getServices: RequestHandler = async (req, res, next) => {
         return;
       }
 
-      // If category is explicitly unpublished, return empty list for public
-      if (cat.status === "unpublished") {
-        res.status(200).json({
-          success: true,
-          services: [],
-        });
-        return;
-      }
-
-      // 2. Extract category ObjectId
       const targetCatId =
         cat._id instanceof ObjectId ? cat._id : new ObjectId(cat._id);
 
-      // 3. Query services collection by categoryId ObjectId
-      query = {
-        status: "published",
+      const serviceQuery = {
+        status: "published" as const,
         $or: [
           { categoryId: targetCatId },
-          { categoryId: targetCatId.toHexString() },
+          { categoryId: targetCatId.toHexString() as unknown as ObjectId },
         ],
       };
-    } else {
-      // Find all published category IDs
-      const publishedCats = await findCategoryDocs({
-        status: { $ne: "unpublished" },
-      });
-      const publishedCatIds = publishedCats
-        .map((c) => (c._id ? (c._id instanceof ObjectId ? c._id : new ObjectId(c._id)) : null))
-        .filter((id): id is ObjectId => Boolean(id));
-      const publishedCatIdStrs = publishedCats
-        .map((c) => (c._id ? c._id.toString() : null))
-        .filter((id): id is string => Boolean(id));
 
-      query = {
-        status: "published",
-        $or: [
-          { categoryId: { $in: [null, undefined] } },
-          { categoryId: { $exists: false } },
-          { categoryId: { $in: [...publishedCatIds, ...publishedCatIdStrs] } },
-        ],
-      };
+      let cursor = serviceCollection()
+        .find(serviceQuery)
+        .sort({ createdAt: -1 });
+
+      if (limit) {
+        cursor = cursor.limit(limit);
+      }
+
+      const services = await cursor.toArray();
+
+      const enrichedServices = services.map((s) => ({
+        ...s,
+        category: {
+          _id: cat._id,
+          name: cat.name,
+          slug: cat.slug,
+        },
+      }));
+
+      res.status(200).json({
+        success: true,
+        services: enrichedServices,
+      });
+      return;
     }
 
-    const services = await serviceCollection()
-      .find(query)
-      .sort({ createdAt: -1 })
-      .toArray();
-
-    // Attach category details
-    const categoryIds = services
-      .map((s) => {
-        if (!s.categoryId) return null;
-        return ObjectId.isValid(s.categoryId)
-          ? new ObjectId(s.categoryId)
-          : null;
-      })
-      .filter((id): id is ObjectId => Boolean(id));
-
-    const categories =
-      categoryIds.length > 0
-        ? await findCategoryDocs({ _id: { $in: categoryIds } })
-        : [];
+    // Default: fetch published categories and published services in parallel
+    const [publishedCats, allServices] = await Promise.all([
+      findCategoryDocs({ status: { $ne: "unpublished" } }),
+      (async () => {
+        let cursor = serviceCollection()
+          .find({ status: "published" })
+          .sort({ createdAt: -1 });
+        if (limit) {
+          cursor = cursor.limit(limit);
+        }
+        return cursor.toArray();
+      })(),
+    ]);
 
     const categoryMap = new Map(
-      categories
+      publishedCats
         .filter((c) => Boolean(c._id))
         .map((c) => [
-          c._id!.toHexString(),
+          c._id!.toString(),
           { _id: c._id!, name: c.name, slug: c.slug },
         ])
     );
 
-    const enrichedServices = services.map((s) => {
-      const catKey = s.categoryId
-        ? typeof s.categoryId === "string"
-          ? s.categoryId
-          : s.categoryId.toHexString()
-        : undefined;
+    // Filter services: allow unassigned OR assigned to a published category
+    const enrichedServices = allServices
+      .filter((s) => {
+        if (!s.categoryId) return true;
+        const catKey =
+          s.categoryId instanceof ObjectId
+            ? s.categoryId.toHexString()
+            : String(s.categoryId);
+        return categoryMap.has(catKey);
+      })
+      .map((s) => {
+        const catKey = s.categoryId
+          ? s.categoryId instanceof ObjectId
+            ? s.categoryId.toHexString()
+            : String(s.categoryId)
+          : undefined;
 
-      return {
-        ...s,
-        category: catKey ? categoryMap.get(catKey) : undefined,
-      };
-    });
+        return {
+          ...s,
+          category: catKey ? categoryMap.get(catKey) : undefined,
+        };
+      });
 
     res.status(200).json({
       success: true,

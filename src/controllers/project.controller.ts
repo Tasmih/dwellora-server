@@ -274,8 +274,13 @@ export const getProjects: RequestHandler = async (req, res, next) => {
   try {
     const categoryQuery =
       req.query.category || req.query.categorySlug || req.query.categoryId;
-    let query: Record<string, unknown>;
+    const limitParam = req.query.limit ? Number(req.query.limit) : undefined;
+    const limit =
+      limitParam && Number.isInteger(limitParam) && limitParam > 0
+        ? Math.min(limitParam, 100)
+        : undefined;
 
+    // Filter by specific category
     if (typeof categoryQuery === "string" && categoryQuery.trim()) {
       const catParam = categoryQuery.trim();
       const isOid = ObjectId.isValid(catParam) && catParam.length === 24;
@@ -288,15 +293,7 @@ export const getProjects: RequestHandler = async (req, res, next) => {
         ],
       });
 
-      if (!cat) {
-        res.status(200).json({
-          success: true,
-          projects: [],
-        });
-        return;
-      }
-
-      if (cat.status === "unpublished") {
+      if (!cat || cat.status === "unpublished") {
         res.status(200).json({
           success: true,
           projects: [],
@@ -307,76 +304,84 @@ export const getProjects: RequestHandler = async (req, res, next) => {
       const targetCatId =
         cat._id instanceof ObjectId ? cat._id : new ObjectId(cat._id);
 
-      query = {
-        status: "published",
+      const projectQuery = {
+        status: "published" as const,
         $or: [
           { categoryId: targetCatId },
-          { categoryId: targetCatId.toHexString() },
+          { categoryId: targetCatId.toHexString() as unknown as ObjectId },
         ],
       };
-    } else {
-      const publishedCats = await findCategoryDocs({
-        status: { $ne: "unpublished" },
-      });
-      const publishedCatIds = publishedCats
-        .map((c) =>
-          c._id ? (c._id instanceof ObjectId ? c._id : new ObjectId(c._id)) : null
-        )
-        .filter((id): id is ObjectId => Boolean(id));
-      const publishedCatIdStrs = publishedCats
-        .map((c) => (c._id ? c._id.toString() : null))
-        .filter((id): id is string => Boolean(id));
 
-      query = {
-        status: "published",
-        $or: [
-          { categoryId: { $in: [null, undefined] } },
-          { categoryId: { $exists: false } },
-          { categoryId: { $in: [...publishedCatIds, ...publishedCatIdStrs] } },
-        ],
-      };
+      let cursor = projectCollection()
+        .find(projectQuery)
+        .sort({ createdAt: -1 });
+
+      if (limit) {
+        cursor = cursor.limit(limit);
+      }
+
+      const projects = await cursor.toArray();
+
+      const enrichedProjects = projects.map((p) => ({
+        ...p,
+        category: {
+          _id: cat._id,
+          name: cat.name,
+          slug: cat.slug,
+        },
+      }));
+
+      res.status(200).json({
+        success: true,
+        projects: enrichedProjects,
+      });
+      return;
     }
 
-    const projects = await projectCollection()
-      .find(query)
-      .sort({ createdAt: -1 })
-      .toArray();
-
-    const categoryIds = projects
-      .map((p) => {
-        if (!p.categoryId) return null;
-        return ObjectId.isValid(p.categoryId)
-          ? new ObjectId(p.categoryId)
-          : null;
-      })
-      .filter((id): id is ObjectId => Boolean(id));
-
-    const categories =
-      categoryIds.length > 0
-        ? await findCategoryDocs({ _id: { $in: categoryIds } })
-        : [];
+    // Default: fetch published categories and projects in parallel
+    const [publishedCats, allProjects] = await Promise.all([
+      findCategoryDocs({ status: { $ne: "unpublished" } }),
+      (async () => {
+        let cursor = projectCollection()
+          .find({ status: "published" })
+          .sort({ createdAt: -1 });
+        if (limit) {
+          cursor = cursor.limit(limit);
+        }
+        return cursor.toArray();
+      })(),
+    ]);
 
     const categoryMap = new Map(
-      categories
+      publishedCats
         .filter((c) => Boolean(c._id))
         .map((c) => [
-          c._id!.toHexString(),
+          c._id!.toString(),
           { _id: c._id!, name: c.name, slug: c.slug },
         ])
     );
 
-    const enrichedProjects = projects.map((p) => {
-      const catKey = p.categoryId
-        ? typeof p.categoryId === "string"
-          ? p.categoryId
-          : p.categoryId.toHexString()
-        : undefined;
+    const enrichedProjects = allProjects
+      .filter((p) => {
+        if (!p.categoryId) return true;
+        const catKey =
+          p.categoryId instanceof ObjectId
+            ? p.categoryId.toHexString()
+            : String(p.categoryId);
+        return categoryMap.has(catKey);
+      })
+      .map((p) => {
+        const catKey = p.categoryId
+          ? p.categoryId instanceof ObjectId
+            ? p.categoryId.toHexString()
+            : String(p.categoryId)
+          : undefined;
 
-      return {
-        ...p,
-        category: catKey ? categoryMap.get(catKey) : undefined,
-      };
-    });
+        return {
+          ...p,
+          category: catKey ? categoryMap.get(catKey) : undefined,
+        };
+      });
 
     res.status(200).json({
       success: true,

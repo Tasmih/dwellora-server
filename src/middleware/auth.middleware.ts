@@ -13,7 +13,13 @@ if (!jwtSecret) {
 const verificationSecret: string = jwtSecret;
 
 export const requireAdmin: RequestHandler = async (req, res, next) => {
-  const token = req.cookies?.admin_token;
+  const authHeader = req.headers.authorization;
+  const bearerToken =
+    typeof authHeader === "string" && authHeader.startsWith("Bearer ")
+      ? authHeader.slice(7).trim()
+      : undefined;
+
+  const token = req.cookies?.admin_token || bearerToken;
 
   if (typeof token !== "string" || !token) {
     res.status(401).json({
