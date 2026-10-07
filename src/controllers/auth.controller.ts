@@ -1,7 +1,7 @@
 import type { RequestHandler } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { findAdminByEmail } from "../models/admin.models";
+import { findAdminByEmail } from "../models/admin.models.js";
 
 
 const jwtSecret = process.env.JWT_SECRET;
@@ -53,11 +53,13 @@ export const loginAdmin: RequestHandler = async (req, res, next) => {
       }
     );
 
+    const isProduction = process.env.NODE_ENV === "production";
+
     res.cookie("admin_token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge:4*24* 60 * 60 * 1000,
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
+      maxAge: 4 * 24 * 60 * 60 * 1000,
       path: "/",
     });
 
@@ -77,10 +79,12 @@ export const loginAdmin: RequestHandler = async (req, res, next) => {
 };
 
 export const logoutAdmin: RequestHandler = (_req, res) => {
+  const isProduction = process.env.NODE_ENV === "production";
+
   res.clearCookie("admin_token", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
     path: "/",
   });
 
