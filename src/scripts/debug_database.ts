@@ -11,13 +11,7 @@ async function runDebug() {
   const collections = await db.listCollections().toArray();
   console.log(collections.map((c) => c.name));
 
-  // Check categories
-  console.log("\n--- CATEGORIES IN DATABASE ---");
-  const catCollName = collections.some((c) => c.name === "service_categories")
-    ? "service_categories"
-    : "categories";
-  console.log("Using category collection:", catCollName);
-  const dbCategories = await db.collection(catCollName).find().toArray();
+  const dbCategories = await db.collection("service_categories").find().toArray();
   console.log(`Found ${dbCategories.length} categories:`);
   dbCategories.forEach((c, i) => {
     console.log(

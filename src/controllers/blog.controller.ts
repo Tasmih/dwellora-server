@@ -238,7 +238,21 @@ export const getBlogs: RequestHandler = async (req, res, next) => {
         : undefined;
 
     let cursor = blogCollection()
-      .find(matchQuery)
+      .find(matchQuery, {
+        projection: {
+          title: 1,
+          slug: 1,
+          shortDescription: 1,
+          coverImage: 1,
+          type: 1,
+          videoUrl: 1,
+          author: 1,
+          readTime: 1,
+          createdAt: 1,
+          status: 1,
+          content: { $substrCP: ["$content", 0, 200] },
+        },
+      })
       .sort({ createdAt: -1 });
 
     if (limit) {
